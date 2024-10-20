@@ -9,7 +9,11 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'work-sans': ['var(--font-work-sans)', 'sans-serif'],
+      },
+    },
   },
   plugins: [
     require('daisyui'),
