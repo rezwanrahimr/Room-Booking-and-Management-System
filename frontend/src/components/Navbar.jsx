@@ -1,6 +1,38 @@
+"use client";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
+
+    const token = Cookies.get('token');
+
+    // Decode token to get user role
+    let userRole = null;
+    if (token) {
+        userRole = JSON.parse(atob(token.split('.')[1])).role;
+    }
+
+    useEffect(() => {
+        if (token) {
+            setIsLoggedIn(true);
+        } else {
+            setIsLoggedIn(false);
+        }
+        setLoading(false);
+    }, []);
+
+    const handleLogout = () => {
+        // Remove token from cookies
+        Cookies.remove('token');
+        setIsLoggedIn(false);
+        router.push('/login');
+    };
+
     const navItems = [
         {
             name: "Home",
@@ -8,9 +40,13 @@ const Navbar = () => {
         },
         {
             name: "Dashboard",
-            path: "/dashboard"
-        },
-    ]
+            path: isLoggedIn && userRole === 'admin' ? "/admin/dashboard" : "/user/dashboard"
+        }
+    ];
+
+
+    if (loading) return null;
+
     return (
         <div className="navbar bg-base-100">
             <div className="navbar-start">
@@ -32,31 +68,37 @@ const Navbar = () => {
                     <ul
                         tabIndex={0}
                         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-
                         {
-                            navItems.map(item => {
-                                return <li><Link href={item.path}>{item.name}</Link></li>
-                            })
+                            navItems.map((item, index) => (
+                                <li key={index}>
+                                    <Link href={item.path}>{item.name}</Link>
+                                </li>
+                            ))
                         }
                     </ul>
                 </div>
-                <a className="btn btn-ghost text-xl">Room Booking and Management System
-                </a>
+                <a className="btn btn-ghost text-3xl">Room Booking</a>
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
                     {
-                        navItems.map(item => {
-                            return <li><Link href={item.path}>{item.name}</Link></li>
-                        })
+                        navItems.map((item, index) => (
+                            <li key={index}>
+                                <Link href={item.path}>{item.name}</Link></li>
+                        ))
                     }
                 </ul>
             </div>
             <div className="navbar-end">
-                <Link className="btn" href="/login">Login</Link>
+                {/* Conditionally render based on login status */}
+                {isLoggedIn ? (
+                    <button className="btn" onClick={handleLogout}>Logout</button>
+                ) : (
+                    <Link className="btn" href="/login">Login</Link>
+                )}
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Navbar;
