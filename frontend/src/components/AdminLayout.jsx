@@ -21,18 +21,18 @@ const AdminLayout = ({ children }) => {
                 <ul className="menu p-4 w-60 h-full bg-white text-base-content font-medium text-base">
                     <li className={isActive('/dashboard') ? 'active' : ''}>
                         <Link href="/dashboard" passHref>
-                            Order
+                            ...
                         </Link>
                     </li>
-                   
+
                     <li className={isActive('/admin/rooms/new') ? 'active' : ''}>
                         <Link href="/admin/rooms/new" passHref>
-                        Create New Room
+                            Create New Room
                         </Link>
                     </li>
-                    <li className={isActive('/dashboard/service') ? 'active' : ''}>
-                        <Link href="/dashboard/service" passHref>
-                            Service List
+                    <li className={isActive('/admin/rooms/all') ? 'active' : ''}>
+                        <Link href="/admin/rooms/all" passHref>
+                            All Rooms
                         </Link>
                     </li>
                     <li className={isActive('/dashboard/review') ? 'active' : ''}>
