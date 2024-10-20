@@ -3,19 +3,38 @@
 import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
+// import { useRouter } from 'next/router';
 import { authHeader } from '@/utils';
 
 const RoomForm = ({ existingRoom }) => {
+    const [initialValues, setInitialValues] = useState(null);
+    const [previewImage, setPreviewImage] = useState({
+        file: null,
+        initialStatus: false
+    }); // Preview image for the existing room
     // const router = useRouter();
     const isUpdate = !!existingRoom;
 
-    const initialValues = {
-        title: existingRoom?.title || '',
-        rent: existingRoom?.rent || '',
-        facilities: existingRoom?.facilities || [],
-        picture: null,
-    };
+    useEffect(() => {
+        // Set the initial values after existingRoom is fetched
+        if (existingRoom) {
+            setInitialValues({
+                title: existingRoom?.title || '',
+                rent: existingRoom?.rent || '',
+                facilities: existingRoom?.facilities || [],
+                picture: null, // Initially null, we'll handle the existing image preview separately
+            });
+            setPreviewImage({ file: existingRoom.picture, initialStatus: true }); // Set the existing image (base64) for preview
+        } else {
+            setInitialValues({
+                title: '',
+                rent: '',
+                facilities: [],
+                picture: null,
+            });
+        }
+    }, [existingRoom]);
 
     const validationSchema = Yup.object({
         title: Yup.string().required('Room title is required'),
@@ -37,7 +56,7 @@ const RoomForm = ({ existingRoom }) => {
         try {
             if (isUpdate) {
                 // Update existing room
-                await axios.put(`/api/rooms/${existingRoom._id}`, formData, {
+                await axios.put(`http://localhost:5000/api/rooms/${existingRoom._id}`, formData, {
                     headers: authHeader(true),
                 });
             } else {
@@ -54,11 +73,32 @@ const RoomForm = ({ existingRoom }) => {
         }
     };
 
+
+    const handlePictureChange = (event, setFieldValue) => {
+        const file = event.currentTarget.files[0];
+        setFieldValue('picture', file);
+
+        // Show the preview of the new selected image
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setPreviewImage({file:reader.result,initialStatus:false});
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    // Render loading state until initialValues are set
+    if (!initialValues) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
+            enableReinitialize // Ensure form reinitializes when initialValues change
         >
             {({ values, setFieldValue }) => (
                 <Form className="order-container flex flex-col space-y-4 w-full">
@@ -108,14 +148,21 @@ const RoomForm = ({ existingRoom }) => {
                     </FieldArray>
 
                     <div className="flex flex-col">
+                        {previewImage && (
+                            <div className="mb-4">
+                                <img
+                                    src={previewImage.initialStatus ?  `data:image/jpeg;base64,${previewImage.file}` : previewImage.file }
+                                    alt="Room Preview"
+                                    className="w-[600px] h-auto"
+                                />
+                            </div>
+                        )}
                         <input
                             type="file"
                             name="picture"
                             accept="image/*"
                             className="file-input file-input-ghost bg-secondary text-white mb-4 w-full lg:w-[600px]"
-                            onChange={(event) => {
-                                setFieldValue('picture', event.currentTarget.files[0]);
-                            }}
+                            onChange={(event) => handlePictureChange(event, setFieldValue)}
                         />
                         <ErrorMessage name="picture" component="div" className="text-red-600 text-sm" />
                     </div>

@@ -48,7 +48,7 @@ const Navbar = () => {
     if (loading) return null;
 
     return (
-        <div className="navbar bg-base-100">
+        <div className="navbar bg-sky-600 text-white font-work-sans flex items-center justify-between lg:px-80 text-2xl">
             <div className="navbar-start">
                 <div className="dropdown">
                     <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -83,7 +83,7 @@ const Navbar = () => {
                 <ul className="menu menu-horizontal px-1">
                     {
                         navItems.map((item, index) => (
-                            <li key={index}>
+                            <li key={index} className="text-xl">
                                 <Link href={item.path}>{item.name}</Link></li>
                         ))
                     }
@@ -92,9 +92,9 @@ const Navbar = () => {
             <div className="navbar-end">
                 {/* Conditionally render based on login status */}
                 {isLoggedIn ? (
-                    <button className="btn" onClick={handleLogout}>Logout</button>
+                    <button className="" onClick={handleLogout}>Logout</button>
                 ) : (
-                    <Link className="btn" href="/login">Login</Link>
+                    <Link className="" href="/login">Login</Link>
                 )}
             </div>
         </div>
