@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
+const roomRoutes = require("./routes/roomRoutes");
 const cors = require("cors");
 
 // Load environment variables from .env file
@@ -18,6 +19,7 @@ app.use(cors()); // enable CORS
 
 // Routes
 app.use("/api/auth", authRoutes); // Authentication routes
+app.use("/api/rooms", roomRoutes); // Room routes
 
 
 app.get("/", (req, res) => {
