@@ -1,57 +1,88 @@
-import multer from 'multer';
+const multer = require('multer');
 const Room = require("../models/roomModel");
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/');
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
+// Set up multer for file uploads
+const storage = multer.memoryStorage(); // Store files in memory
+const upload = multer({ storage: storage });
 
-const upload = multer({ storage });
-
-const createRoom = async (req, res) => {
-    const { title, rent, facilities } = req.body;
-    const picture = req.file.path;
-
-    const room = new Room({ title, rent, facilities, picture });
-    await room.save();
-
-    res.status(201).json(room);
-};
-
-
+// Middleware to handle file uploads
 const uploadRoomPicture = upload.single('picture');
 
-// Get All Rooms
+// create a room
+const createRoom = async (req, res) => {
+    try {
+        const { title, rent } = req.body;
+
+        const facilities = req.body.facilities.split(',').map((facility) => facility.trim());
+
+        // Convert the uploaded file to base64 for storage
+        const picture = req.file ? req.file.buffer.toString('base64') : null;
+
+        const newRoom = new Room({
+            title,
+            rent,
+            facilities,
+            picture,
+        });
+
+        await newRoom.save();
+        res.status(201).json({ message: 'Room created successfully', room: newRoom });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+//fetch all rooms
 const getRooms = async (req, res) => {
-    const rooms = await Room.find();
-    res.json(rooms);
+    try {
+        const rooms = await Room.find();
+        res.json(rooms);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
-// Update Room
+//update a room
 const updateRoom = async (req, res) => {
-    const room = await Room.findById(req.params.id);
+    try {
+        const room = await Room.findById(req.params.id);
 
-    if (!room) return res.status(404).json({ message: "Room not found" });
+        if (!room) return res.status(404).json({ message: "Room not found" });
 
-    Object.assign(room, req.body);
-    await room.save();
+        // Update room fields
+        Object.assign(room, req.body);
 
-    res.json(room);
+        // If there's a new picture uploaded, update it
+        if (req.file) {
+            room.picture = req.file.buffer.toString('base64'); // Convert to base64 if a new file is uploaded
+        }
+
+        await room.save();
+        res.json(room);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
-// Delete Room
+//delete a room
 const deleteRoom = async (req, res) => {
-    const room = await Room.findById(req.params.id);
+    try {
+        const room = await Room.findById(req.params.id);
 
-    if (!room) return res.status(404).json({ message: "Room not found" });
+        if (!room) return res.status(404).json({ message: "Room not found" });
 
-    await room.remove();
-    res.json({ message: "Room removed" });
+        await room.remove();
+        res.json({ message: "Room removed" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
-module.exports = { createRoom, uploadRoomPicture, getRooms, updateRoom, deleteRoom };
+module.exports = {
+    uploadRoomPicture,
+    createRoom,
+    getRooms,
+    updateRoom,
+    deleteRoom,
+};

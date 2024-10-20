@@ -7,14 +7,14 @@ import { useRouter } from 'next/router';
 import { authHeader } from '@/utils';
 
 const RoomForm = ({ existingRoom }) => {
-    // const router = useRouter(); // Uncommented to use for navigation
+    // const router = useRouter();
     const isUpdate = !!existingRoom;
 
     const initialValues = {
         title: existingRoom?.title || '',
         rent: existingRoom?.rent || '',
         facilities: existingRoom?.facilities || [],
-        picture: null, // Picture is handled as a file input
+        picture: null,
     };
 
     const validationSchema = Yup.object({
@@ -28,18 +28,27 @@ const RoomForm = ({ existingRoom }) => {
         const formData = new FormData();
         formData.append('title', values.title);
         formData.append('rent', values.rent);
-        formData.append('facilities', JSON.stringify(values.facilities));
-        formData.append('picture', values.picture);
+        formData.append('facilities', values.facilities);
+
+        if (values.picture) {
+            formData.append('picture', values.picture);
+        }
 
         try {
             if (isUpdate) {
                 // Update existing room
-                await axios.put(`/api/rooms/${existingRoom._id}`, formData, { headers: authHeader() });
+                await axios.put(`/api/rooms/${existingRoom._id}`, formData, {
+                    headers: authHeader(true),
+                });
             } else {
                 // Create new room
-                await axios.post('http://localhost:5000/api/rooms', formData, { headers: authHeader() });
+                await axios.post('http://localhost:5000/api/rooms', formData, {
+                    headers: authHeader(true),
+                });
             }
-            // router.push('/admin/dashboard'); // Navigate after success
+
+            // Navigate after success
+            // router.push('/admin/dashboard');
         } catch (error) {
             console.error('Error saving room:', error);
         }
@@ -53,7 +62,6 @@ const RoomForm = ({ existingRoom }) => {
         >
             {({ values, setFieldValue }) => (
                 <Form className="order-container flex flex-col space-y-4 w-full">
-                    {/* Room Title */}
                     <div>
                         <Field
                             name="title"
@@ -64,7 +72,6 @@ const RoomForm = ({ existingRoom }) => {
                         <ErrorMessage name="title" component="div" className="text-red-600 text-sm" />
                     </div>
 
-                    {/* Room Rent */}
                     <div>
                         <Field
                             name="rent"
@@ -75,7 +82,6 @@ const RoomForm = ({ existingRoom }) => {
                         <ErrorMessage name="rent" component="div" className="text-red-600 text-sm" />
                     </div>
 
-                    {/* Facilities */}
                     <FieldArray name="facilities">
                         {({ push, remove }) => (
                             <div>
@@ -87,7 +93,7 @@ const RoomForm = ({ existingRoom }) => {
                                             className="input input-bordered w-full lg:w-[600px]"
                                         />
                                         <ErrorMessage name={`facilities.${index}`} component="div" className="text-red-600 text-sm" />
-                                        <button type="button" className='text-red-600' onClick={() => remove(index)}>Remove</button>
+                                        <button type="button" className="text-red-600" onClick={() => remove(index)}>Remove</button>
                                     </div>
                                 ))}
                                 <button
@@ -101,7 +107,6 @@ const RoomForm = ({ existingRoom }) => {
                         )}
                     </FieldArray>
 
-                    {/* Picture Upload */}
                     <div className="flex flex-col">
                         <input
                             type="file"
@@ -115,7 +120,6 @@ const RoomForm = ({ existingRoom }) => {
                         <ErrorMessage name="picture" component="div" className="text-red-600 text-sm" />
                     </div>
 
-                    {/* Submit Button */}
                     <button type="submit" className="btn btn-active btn-neutral w-full text-white">
                         {isUpdate ? 'Update Room' : 'Create Room'}
                     </button>

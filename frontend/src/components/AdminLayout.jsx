@@ -24,9 +24,12 @@ const AdminLayout = ({ children }) => {
                             Order
                         </Link>
                     </li>
-                    <Link href="/admin/rooms/new" className="btn btn-primary">
+                   
+                    <li className={isActive('/admin/rooms/new') ? 'active' : ''}>
+                        <Link href="/admin/rooms/new" passHref>
                         Create New Room
-                    </Link>
+                        </Link>
+                    </li>
                     <li className={isActive('/dashboard/service') ? 'active' : ''}>
                         <Link href="/dashboard/service" passHref>
                             Service List

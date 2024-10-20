@@ -10,7 +10,6 @@ const NewRoomPage = () => {
                 <RoomForm />
             </div>
         </AdminLayout>
-
     );
 };
 
