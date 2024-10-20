@@ -1,24 +1,28 @@
 "use client";
 
-import { useState } from 'react';
+import Link from "next/link";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useFormik } from 'formik';
 import Cookies from 'js-cookie';
-import * as Yup from 'yup';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
-const LoginPage = () => {
+const RegistrationPage = () => {
     const [error, setError] = useState(null);
     const router = useRouter();
 
     // Formik setup
     const formik = useFormik({
         initialValues: {
+            name: '',
             email: '',
             password: '',
         },
         validationSchema: Yup.object({
+            name: Yup.string()
+                .min(3, 'Name must be at least 3 characters')
+                .required('Name is required'),
             email: Yup.string()
                 .email('Invalid email format')
                 .required('Email is required'),
@@ -30,7 +34,7 @@ const LoginPage = () => {
             setError(null);
 
             try {
-                const response = await axios.post('http://localhost:5000/api/auth/login', values);
+                const response = await axios.post('http://localhost:5000/api/auth/register', values);
                 const token = response.data.token;
 
                 // Store JWT in cookies
@@ -46,21 +50,39 @@ const LoginPage = () => {
                     router.push('/user/dashboard'); // Redirect to user dashboard
                 }
             } catch (err) {
-                setError(err.response?.data?.message || 'Login failed.');
+                setError(err.response?.data?.message || 'Registration failed.');
             }
         },
     });
 
     return (
         <div>
-            <div className="hero min-h-screen">
-                <div className="hero-content flex-col">
+            <div className="hero min-h-screen ">
+                <div className="hero-content flex-col w-full">
                     <div className="text-center">
-                        <h1 className="text-2xl mt-3 font-bold">Login</h1>
+                        <h1 className="text-2xl mt-3 font-bold">Registration</h1>
                     </div>
-                    <div className="card flex-shrink-0 w-full max-w-md shadow-2xl bg-base-100">
+                    <div className="card flex-shrink-0 w-full max-w-lg shadow-2xl bg-base-100">
                         <div className="card-body">
                             <form onSubmit={formik.handleSubmit}>
+                                <div className="form-control">
+                                    <label className="label">
+                                        <span className="label-text">Name</span>
+                                    </label>
+                                    <input
+                                        name="name"
+                                        type="text"
+                                        placeholder="name"
+                                        className={`input input-bordered ${formik.touched.name && formik.errors.name ? 'input-error' : ''}`}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        value={formik.values.name}
+                                    />
+                                    {formik.touched.name && formik.errors.name ? (
+                                        <p className="text-red-500 text-xs">{formik.errors.name}</p>
+                                    ) : null}
+                                </div>
+
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">Email</span>
@@ -78,6 +100,7 @@ const LoginPage = () => {
                                         <p className="text-red-500 text-xs">{formik.errors.email}</p>
                                     ) : null}
                                 </div>
+
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">Password</span>
@@ -95,25 +118,29 @@ const LoginPage = () => {
                                         <p className="text-red-500 text-xs">{formik.errors.password}</p>
                                     ) : null}
                                 </div>
-                                {error && <p className="text-red-500 text-xs">{error}</p>}
+
+                                {error && <p className="text-red-500 text-sm">{error}</p>}
+
                                 <div className="form-control mt-6">
                                     <button type="submit" className="btn btn-primary">
-                                        Login
+                                        Register
                                     </button>
                                 </div>
                             </form>
+
                             <button>
-                                Don’t have an account?{" "}
-                                <Link href="/registration" className="text-secondary">
-                                    Create an account
+                                Already have an account?{" "}
+                                <Link href="/login" className="text-secondary">
+                                    Login
                                 </Link>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     );
 };
 
-export default LoginPage;
+export default RegistrationPage;
