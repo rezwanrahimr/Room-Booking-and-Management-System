@@ -37,12 +37,13 @@ const RoomDetail = () => {
     const handleBooking = async (values, { setSubmitting }) => {
         try {
             const bookingData = {
+                roomId: params.roomId,
                 fromDate: values.fromDate,
                 toDate: values.toDate,
-                roomId: params.roomId
+                price: room.rent
             };
             // Call the booking API
-            await axios.post('http://localhost:5000/api/bookings', bookingData, { headers: authHeader() });
+            await axios.post('http://localhost:5000/api/booking', bookingData, { headers: authHeader() });
             alert("Booking successful!");
         } catch (error) {
             console.error("Error booking room:", error);

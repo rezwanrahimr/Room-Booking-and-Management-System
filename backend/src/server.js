@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const roomRoutes = require("./routes/roomRoutes");
+const bookingRoutes = require("./routes/bookingRoutes");
 const path = require('path'); // Import the path module
 const cors = require("cors");
 
@@ -24,6 +25,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes
 app.use("/api/auth", authRoutes); // Authentication routes
 app.use("/api/rooms", roomRoutes); // Room routes
+app.use("/api/booking", bookingRoutes); // Booking routes
 
 
 app.get("/", (req, res) => {
