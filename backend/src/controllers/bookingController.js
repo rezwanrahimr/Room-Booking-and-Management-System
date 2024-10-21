@@ -7,7 +7,6 @@ const createBooking = async (req, res) => {
 
     try {
         const existingBooking = await Booking.findOne({
-            room: roomId,
             $or: [
                 { fromDate: { $lt: toDate }, toDate: { $gt: fromDate } },
                 { fromDate: { $gte: fromDate, $lt: toDate } },
@@ -21,8 +20,8 @@ const createBooking = async (req, res) => {
         }
 
         const booking = new Booking({
-            user: req.user._id,
-            room: roomId,
+            userId: req.user._id,
+            roomId,
             fromDate,
             toDate,
             price,
@@ -39,7 +38,7 @@ const createBooking = async (req, res) => {
 // Get bookings for a user
 const getUserBookings = async (req, res) => {
     try {
-        const bookings = await Booking.find({ user: req.user._id }).populate('room');
+        const bookings = await Booking.find({ userId: req.user._id }).populate('roomId');
         res.json(bookings);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });

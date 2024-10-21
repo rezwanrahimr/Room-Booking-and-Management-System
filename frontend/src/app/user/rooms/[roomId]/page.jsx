@@ -5,11 +5,15 @@ import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { authHeader } from '@/utils';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
 
 const RoomDetail = () => {
     const [room, setRoom] = useState(null);
     const params = useParams();
+    const { push } = useRouter();
+
 
     useEffect(() => {
         const fetchRoom = async () => {
@@ -35,6 +39,13 @@ const RoomDetail = () => {
     });
 
     const handleBooking = async (values, { setSubmitting }) => {
+
+        const token = Cookies.get('token');
+        if (!token) {
+            push('/login');
+            return;
+        }
+
         try {
             const bookingData = {
                 roomId: params.roomId,
@@ -43,11 +54,26 @@ const RoomDetail = () => {
                 price: room.rent
             };
             // Call the booking API
-            await axios.post('http://localhost:5000/api/booking', bookingData, { headers: authHeader() });
-            alert("Booking successful!");
+            const response = await axios.post('http://localhost:5000/api/booking', bookingData, { headers: authHeader() });
+            if (response.status === 201) {
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Booking successful!",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                push('/user/dashboard');
+            }
         } catch (error) {
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Booking failed!",
+                showConfirmButton: false,
+                timer: 1500
+            });
             console.error("Error booking room:", error);
-            alert("Failed to book the room. Please try again.");
         } finally {
             setSubmitting(false);
         }
