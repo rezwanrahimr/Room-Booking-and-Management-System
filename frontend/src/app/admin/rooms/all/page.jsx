@@ -1,4 +1,3 @@
-// pages/rooms.js
 "use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -13,7 +12,7 @@ const Rooms = () => {
     useEffect(() => {
         const fetchRooms = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/rooms'); // Adjust the URL if needed
+                const response = await fetch('http://localhost:5000/api/rooms');
                 if (!response.ok) {
                     throw new Error('Failed to fetch rooms');
                 }
