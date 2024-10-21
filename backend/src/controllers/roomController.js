@@ -43,6 +43,19 @@ const getRooms = async (req, res) => {
     }
 };
 
+// fetch by id
+const getRoomById = async (req, res) => {
+    try {
+        const room = await Room.findById(req.params.id);
+
+        if (!room) return res.status(404).json({ message: "Room not found" });
+
+        res.json(room);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 //update a room
 const updateRoom = async (req, res) => {
     try {
@@ -83,6 +96,7 @@ module.exports = {
     uploadRoomPicture,
     createRoom,
     getRooms,
+    getRoomById,
     updateRoom,
     deleteRoom,
 };

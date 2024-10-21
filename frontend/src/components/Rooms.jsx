@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 
@@ -50,9 +51,12 @@ const Rooms = () => {
                                     ))}
                                 </ul>
                                 <div className="card-actions flex justify-end">
-                                    <button className="btn bg-sky-600 text-white hover:bg-sky-500 px-4 py-2 rounded-lg font-medium transition-colors duration-200">
-                                        View Details
-                                    </button>
+                                    <Link href={`/user/rooms/${room._id}`}>
+                                        <button className="btn bg-sky-600 text-white hover:bg-sky-500 px-4 py-2 rounded-lg font-medium transition-colors duration-200" >
+                                            View Details
+                                        </button>
+                                    </Link>
+
                                 </div>
                             </div>
                         </div>
