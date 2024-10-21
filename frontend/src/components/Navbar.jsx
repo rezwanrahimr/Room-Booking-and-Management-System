@@ -31,19 +31,23 @@ const Navbar = () => {
         Cookies.remove('token');
         setIsLoggedIn(false);
         router.push('/login');
-        
+
     };
 
     const navItems = [
         {
             name: "Home",
             path: "/"
-        },
-        {
+        }
+
+    ];
+
+    if (token) {
+        navItems.push({
             name: "Dashboard",
             path: isLoggedIn && userRole === 'admin' ? "/admin/dashboard" : "/user/dashboard"
-        }
-    ];
+        })
+    }
 
 
     if (loading) return null;
@@ -78,7 +82,7 @@ const Navbar = () => {
                         }
                     </ul>
                 </div>
-                <a className="btn btn-ghost text-3xl">Room Booking</a>
+                <Link className="btn btn-ghost text-3xl" href="/">Room Booking</Link>
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">

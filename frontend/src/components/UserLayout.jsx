@@ -10,7 +10,7 @@ const UserLayout = ({ children }) => {
     const isActive = (path) => router.pathname === path;
 
     return (
-        <div className="drawer lg:drawer-open pt-24">
+        <div className="drawer lg:drawer-open font-work-sans">
             <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
             <div className="drawer-content flex flex-col items-start justify-start ps-8 pt-8 bg-slate-100">
                 {children}

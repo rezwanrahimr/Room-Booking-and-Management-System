@@ -16,7 +16,11 @@ const createBooking = async (req, res) => {
         });
 
         if (existingBooking) {
-            return res.status(400).json({ message: 'Room is already booked for the selected dates' });
+            return res.status(400).json({
+                status: false,
+                message: 'Room is already booked for the selected dates',
+                data: null
+            });
         }
 
         const booking = new Booking({
@@ -29,11 +33,20 @@ const createBooking = async (req, res) => {
 
         await booking.save();
 
-        res.status(201).json(booking);
+        res.status(201).json({
+            status: true,
+            message: 'Booking created successfully',
+            data: booking
+        });
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
+        res.status(500).json({
+            status: false,
+            message: 'Server error',
+            data: error.message
+        });
     }
 };
+
 
 // Get bookings for a user
 const getUserBookings = async (req, res) => {

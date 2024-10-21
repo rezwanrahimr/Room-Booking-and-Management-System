@@ -55,25 +55,19 @@ const RoomDetail = () => {
             };
             // Call the booking API
             const response = await axios.post('http://localhost:5000/api/booking', bookingData, { headers: authHeader() });
-            if (response.status === 201) {
-                Swal.fire({
-                    position: "center",
-                    icon: "success",
-                    title: "Booking successful!",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                push('/user/dashboard');
-            }
-        } catch (error) {
+            console.log(response)
             Swal.fire({
                 position: "center",
-                icon: "error",
-                title: "Booking failed!",
+                icon: "success",
+                title:` ${response.data.message}`,
                 showConfirmButton: false,
                 timer: 1500
             });
-            console.error("Error booking room:", error);
+            if (response.data.status) {
+                push('/user/dashboard');
+            }
+        } catch (error) {
+
         } finally {
             setSubmitting(false);
         }

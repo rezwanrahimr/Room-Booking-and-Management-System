@@ -44,18 +44,12 @@ const getRooms = async (req, res) => {
 };
 
 // fetch by id
-<<<<<<< HEAD
-const getRoomsById = async (req, res) => {
-    try {
-        const room = await Room.findById(req.params.id);
-=======
 const getRoomById = async (req, res) => {
     try {
         const room = await Room.findById(req.params.id);
 
         if (!room) return res.status(404).json({ message: "Room not found" });
 
->>>>>>> ee3a1e947e1950a6e86ab8d6faafcf3aa2d7a6e2
         res.json(room);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -108,11 +102,7 @@ module.exports = {
     uploadRoomPicture,
     createRoom,
     getRooms,
-<<<<<<< HEAD
-    getRoomsById,
-=======
     getRoomById,
->>>>>>> ee3a1e947e1950a6e86ab8d6faafcf3aa2d7a6e2
     updateRoom,
     deleteRoom,
 };
