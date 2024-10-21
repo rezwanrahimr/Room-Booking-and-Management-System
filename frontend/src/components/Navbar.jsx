@@ -31,6 +31,7 @@ const Navbar = () => {
         Cookies.remove('token');
         setIsLoggedIn(false);
         router.push('/login');
+        
     };
 
     const navItems = [

@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { useFormik } from 'formik';
 import Cookies from 'js-cookie';
 import * as Yup from 'yup';
-import { convertOkhslToOklab } from 'culori';
 
 const LoginPage = () => {
     const [error, setError] = useState(null);
@@ -45,7 +44,7 @@ const LoginPage = () => {
                 if (userRole === 'admin') {
                     router.push('/admin/dashboard'); // Redirect to admin dashboard
                 } else {
-                    router.push('/user/dashboard'); // Redirect to user dashboard
+                    router.push('/'); // Redirect to user dashboard
                 }
             } catch (err) {
                 setError(err.response?.data?.message || 'Login failed.');

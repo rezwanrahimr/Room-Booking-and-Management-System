@@ -1,8 +1,10 @@
+import UserLayout from "@/components/UserLayout";
+
 const UserDashboard = () => {
     return (
-        <div>
-            <h1>User Dashboard</h1>
-        </div>
+        <UserLayout>
+            <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
+        </UserLayout>
     );
 };
 
