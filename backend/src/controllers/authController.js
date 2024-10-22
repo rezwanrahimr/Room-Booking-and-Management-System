@@ -48,4 +48,21 @@ const loginUser = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser };
+// Get All Users with role 'user'
+const getAllUser = async (req, res) => {
+    const users = await User.find({ role: "user" });
+
+    if (!users) {
+        return res.status(404).json({ message: "No users found" });
+    }
+
+    res.status(200).json({
+        status: true,
+        message: 'user retrieved successfully',
+        data: users
+    });
+};
+
+
+
+module.exports = { registerUser, loginUser, getAllUser };

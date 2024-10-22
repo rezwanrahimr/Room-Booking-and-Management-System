@@ -4,10 +4,9 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const roomRoutes = require("./routes/roomRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
-const path = require('path');
 const cors = require("cors");
 
-// Load environment variables from .env file
+
 dotenv.config();
 
 // Connect to MongoDB
@@ -17,7 +16,6 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-
 app.use(cors());
 
 // Routes

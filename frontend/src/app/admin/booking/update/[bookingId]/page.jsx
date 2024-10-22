@@ -1,12 +1,12 @@
 "use client";
 
 import AdminLayout from '@/components/AdminLayout';
-import RoomForm from '../../../../../components/RoomForm';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { authHeader } from '@/utils';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import BookingForm from '@/components/BookingForm';
 
 const UpdateBookingPage = () => {
     const [getBooking, setGetBooking] = useState(null);
@@ -15,7 +15,7 @@ const UpdateBookingPage = () => {
     const params = useParams();
 
     useEffect(() => {
-        async function fetchRoom() {
+        async function fetchBooking() {
             const bookingId = params.bookingId;
             try {
                 setLoading(true);
@@ -28,7 +28,7 @@ const UpdateBookingPage = () => {
             }
         }
 
-        fetchRoom();
+        fetchBooking();
     }, [params.bookingId]);
 
     if (loading) return <LoadingSpinner />;
@@ -38,7 +38,7 @@ const UpdateBookingPage = () => {
         <AdminLayout>
             <div>
                 <h1 className='text-center text-3xl my-5 font-work-sans font-bold'>Update Booking</h1>
-                {/* <RoomForm existingRoom={getBooking} /> */}
+                <BookingForm existingBooking={getBooking} />
             </div>
         </AdminLayout>
     );

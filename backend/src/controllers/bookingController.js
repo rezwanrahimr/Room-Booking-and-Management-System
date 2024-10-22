@@ -72,8 +72,6 @@ const getBookingById = async (req, res) => {
 // Get bookings for a user
 const getBookingByRoomId = async (req, res) => {
     try {
-
-        // Find bookings where the current date is between fromDate and toDate
         const currentDate = new Date();
         const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0));
         const endOfDay = new Date(currentDate.setHours(23, 59, 59, 999));

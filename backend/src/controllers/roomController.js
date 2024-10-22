@@ -1,8 +1,7 @@
 const multer = require('multer');
 const Room = require("../models/roomModel");
 
-// Set up multer for file uploads
-const storage = multer.memoryStorage(); // Store files in memory
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // Middleware to handle file uploads
@@ -15,7 +14,7 @@ const createRoom = async (req, res) => {
 
         const facilities = req.body.facilities.split(',').map((facility) => facility.trim());
 
-        // Convert the uploaded file to base64 for storage
+        // Convert the uploaded file to base64 
         const picture = req.file ? req.file.buffer.toString('base64') : null;
 
         const newRoom = new Room({
@@ -42,7 +41,7 @@ const createRoom = async (req, res) => {
 };
 
 
-//fetch all rooms
+// fetch all rooms
 const getRooms = async (req, res) => {
     try {
         const rooms = await Room.find();
@@ -72,10 +71,8 @@ const updateRoom = async (req, res) => {
 
         if (!room) return res.status(404).json({ message: "Room not found" });
 
-        // Update room fields
         Object.assign(room, req.body);
 
-        // If there's a new picture uploaded, update it
         if (req.file) {
             room.picture = req.file.buffer.toString('base64'); // Convert to base64 if a new file is uploaded
         }

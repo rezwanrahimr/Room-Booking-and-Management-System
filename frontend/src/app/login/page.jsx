@@ -42,12 +42,14 @@ const LoginPage = () => {
 
                 // Redirect based on user role
                 if (userRole === 'admin') {
-                    router.push('/admin/dashboard'); // Redirect to admin dashboard
+                    // router.push('/admin/dashboard'); // Redirect to admin dashboard
+                    window.location.href = '/admin/dashboard';
                 } else {
-                    router.push('/'); // Redirect to user dashboard
+                    // router.push('/'); // Redirect to user dashboard
+                    window.location.href = '/';
                 }
             } catch (err) {
-                setError(err.response?.data?.message || 'Login failed.');
+                setError(err.response?.data?.message);
             }
         },
     });

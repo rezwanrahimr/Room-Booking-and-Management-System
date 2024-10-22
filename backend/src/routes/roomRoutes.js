@@ -1,5 +1,5 @@
 const express = require("express");
-const { createRoom, uploadRoomPicture, updateRoom, deleteRoom, getRooms,getRoomById } = require("../controllers/roomController");
+const { createRoom, uploadRoomPicture, updateRoom, deleteRoom, getRooms, getRoomById } = require("../controllers/roomController");
 const { protect, admin } = require("../middleware/authMiddleware");
 const router = express.Router();
 

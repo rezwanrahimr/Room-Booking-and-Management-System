@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import AdminLayout from '@/components/AdminLayout';
-import Image from 'next/image';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { authHeader } from '@/utils';

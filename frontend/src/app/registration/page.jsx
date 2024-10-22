@@ -45,12 +45,14 @@ const RegistrationPage = () => {
 
                 // Redirect based on user role
                 if (userRole === 'admin') {
-                    router.push('/admin/dashboard'); // Redirect to admin dashboard
+                    // router.push('/admin/dashboard'); // Redirect to admin dashboard
+                    window.location.href = '/admin/dashboard';
                 } else {
-                    router.push('/user/dashboard'); // Redirect to user dashboard
+                    // router.push('/user/dashboard'); // Redirect to user dashboard
+                    window.location.href = '/user/dashboard';
                 }
             } catch (err) {
-                setError(err.response?.data?.message || 'Registration failed.');
+                setError(err.response?.data?.message);
             }
         },
     });

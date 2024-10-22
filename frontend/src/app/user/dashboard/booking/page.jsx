@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { authHeader } from '@/utils';
-import * as Yup from 'yup';
 import UserLayout from '@/components/UserLayout';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
