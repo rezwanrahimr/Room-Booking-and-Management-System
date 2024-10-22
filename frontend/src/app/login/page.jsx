@@ -30,7 +30,7 @@ const LoginPage = () => {
             setError(null);
 
             try {
-                const response = await axios.post('http://localhost:5000/api/auth/login', values);
+                const response = await axios.post('https://room-booking-and-management-system.vercel.app/api/auth/login', values);
                 const token = response.data.token;
 
                 // Store JWT in cookies

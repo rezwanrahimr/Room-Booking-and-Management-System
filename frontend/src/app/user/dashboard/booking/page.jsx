@@ -52,22 +52,22 @@ const Bookings = () => {
                     return <div key={booking._id} className="card p-16 lg:card-side bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out my-5">
                         <figure className="w-full lg:w-1/2">
                             <img
-                                src={`data:image/jpeg;base64,${booking.roomId.picture}`}
-                                alt={booking.roomId.title}
+                                src={`data:image/jpeg;base64,${booking?.roomId?.picture}`}
+                                alt={booking?.roomId?.title}
                                 className="object-cover h-full w-full rounded-lg"
                             />
                         </figure>
                         <div className="card-body p-16 w-full lg:w-1/2">
-                            <h2 className="card-title text-3xl font-bold text-gray-800 mb-4">{booking.roomId.title}</h2>
-                            <p className="text-gray-600 mb-4">{booking.roomId.description || "No description available for this room."}</p>
+                            <h2 className="card-title text-3xl font-bold text-gray-800 mb-4">{booking?.roomId?.title}</h2>
+                            <p className="text-gray-600 mb-4">{booking?.roomId?.description || "No description available for this room."}</p>
                             <p className="text-black text-lg font-bold">Facilities:</p>
                             <ul className="list-disc list-inside text-gray-600 mb-4">
-                                {booking.roomId.facilities.map((facility, index) => (
+                                {booking?.roomId?.facilities.map((facility, index) => (
                                     <li key={index}>{facility}</li>
                                 ))}
                             </ul>
                             <p className="text-lg font-semibold text-gray-800">
-                                Rent: <span className="text-sky-600">${booking.roomId.rent}</span>
+                                Rent: <span className="text-sky-600">${booking?.roomId?.rent}</span>
                             </p>
 
                             <div className="flex flex-col md:flex-row gap-4">
@@ -77,7 +77,7 @@ const Bookings = () => {
                                         type="date"
                                         name="fromDate"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
-                                        value={new Date(booking.fromDate).toISOString().split('T')[0]}
+                                        value={new Date(booking?.fromDate).toISOString().split('T')[0]}
                                         disabled
                                     />
                                 </div>
@@ -87,7 +87,7 @@ const Bookings = () => {
                                         type="date"
                                         name="toDate"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
-                                        value={new Date(booking.toDate).toISOString().split('T')[0]}
+                                        value={new Date(booking?.toDate).toISOString().split('T')[0]}
                                         disabled
                                     />
                                 </div>
@@ -97,7 +97,7 @@ const Bookings = () => {
                                     type="submit"
                                     className="btn bg-sky-600 text-white hover:bg-sky-500 px-4 py-2 rounded-lg font-medium transition-colors duration-200"
                                 >
-                                    {booking.status}
+                                    {booking?.status}
                                 </button>
                             </div>
                         </div>

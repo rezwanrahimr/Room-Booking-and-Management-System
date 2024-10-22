@@ -25,8 +25,8 @@ const BookingForm = ({ existingBooking }) => {
         const fetchData = async () => {
             try {
                 const [usersResponse, roomsResponse] = await Promise.all([
-                    axios.get("http://localhost:5000/api/auth/users", { headers: authHeader() }),
-                    axios.get("http://localhost:5000/api/rooms", { headers: authHeader() })
+                    axios.get("https://room-booking-and-management-system.vercel.app/api/auth/users", { headers: authHeader() }),
+                    axios.get("https://room-booking-and-management-system.vercel.app/api/rooms", { headers: authHeader() })
                 ]);
 
                 if (usersResponse.data.status) {
@@ -80,7 +80,7 @@ const BookingForm = ({ existingBooking }) => {
     const handleSubmit = async (values) => {
         try {
             const formatData = { ...values };
-            const response = await axios.put(`http://localhost:5000/api/booking/${existingBooking._id}`, formatData, { headers: authHeader() });
+            const response = await axios.put(`https://room-booking-and-management-system.vercel.app/api/booking/${existingBooking._id}`, formatData, { headers: authHeader() });
 
             if (response.data.status) {
                 Swal.fire({

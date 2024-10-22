@@ -29,7 +29,7 @@ const AdminLayout = ({ children }) => {
                             All Rooms
                         </Link>
                     </li>
-                    <li className={isActive('/admin/rooms/all') ? 'bg-sky-200 rounded' : ''}>
+                    <li className={isActive('/admin/booking/all') ? 'bg-sky-200 rounded' : ''}>
                         <Link href="/admin/booking/all" passHref>
                             All Bookings
                         </Link>

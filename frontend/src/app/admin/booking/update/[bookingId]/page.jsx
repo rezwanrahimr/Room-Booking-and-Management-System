@@ -19,7 +19,7 @@ const UpdateBookingPage = () => {
             const bookingId = params.bookingId;
             try {
                 setLoading(true);
-                const response = await axios.get(`http://localhost:5000/api/booking/${bookingId}`, { headers: authHeader() });
+                const response = await axios.get(`https://room-booking-and-management-system.vercel.app/api/booking/${bookingId}`, { headers: authHeader() });
                 setGetBooking(response.data);
             } catch (err) {
                 setError(err.response?.data?.message || 'Failed to fetch booking data');
