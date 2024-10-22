@@ -16,7 +16,7 @@ const Rooms = () => {
     useEffect(() => {
         const fetchRooms = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/rooms');
+                const response = await fetch('https://room-booking-and-management-system.vercel.app/api/rooms');
                 if (!response.ok) {
                     throw new Error('Failed to fetch rooms');
                 }
@@ -43,7 +43,7 @@ const Rooms = () => {
             confirmButtonText: "Delete"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                const response = await axios.delete(`http://localhost:5000/api/rooms/${id}`, { headers: authHeader() });
+                const response = await axios.delete(`https://room-booking-and-management-system.vercel.app/api/rooms/${id}`, { headers: authHeader() });
 
                 if (response.data.status) {
                     Swal.fire("Deleted!", "Room has been deleted.", "success");

@@ -62,7 +62,7 @@ const RoomForm = ({ existingRoom }) => {
         try {
             if (isUpdate) {
                 // Update existing room
-                const response = await axios.put(`http://localhost:5000/api/rooms/${existingRoom._id}`, formData, {
+                const response = await axios.put(`https://room-booking-and-management-system.vercel.app/api/rooms/${existingRoom._id}`, formData, {
                     headers: authHeader(true),
                 });
 
@@ -87,7 +87,7 @@ const RoomForm = ({ existingRoom }) => {
                 }
             } else {
                 // Create new room
-                const response = await axios.post('http://localhost:5000/api/rooms', formData, {
+                const response = await axios.post('https://room-booking-and-management-system.vercel.app/api/rooms', formData, {
                     headers: authHeader(true),
                 });
 

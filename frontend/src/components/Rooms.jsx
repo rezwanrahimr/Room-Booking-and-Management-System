@@ -12,7 +12,7 @@ const Rooms = () => {
     useEffect(() => {
         const fetchRooms = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/rooms');
+                const response = await fetch('https://room-booking-and-management-system.vercel.app/api/rooms');
                 if (!response.ok) {
                     throw new Error('Failed to fetch rooms');
                 }

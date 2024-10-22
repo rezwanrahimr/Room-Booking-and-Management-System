@@ -8,28 +8,28 @@ import { useParams } from 'next/navigation';
 import { authHeader } from '@/utils';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
-const UpdateRoomPage = () => {
-    const [getRoom, setGetRoom] = useState(null);
+const UpdateBookingPage = () => {
+    const [getBooking, setGetBooking] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const params = useParams();
 
     useEffect(() => {
         async function fetchRoom() {
-            const roomId = params.roomId;
+            const bookingId = params.bookingId;
             try {
                 setLoading(true);
-                const response = await axios.get(`https://room-booking-and-management-system.vercel.app/api/rooms/${roomId}`, { headers: authHeader() });
-                setGetRoom(response.data);
+                const response = await axios.get(`http://localhost:5000/api/booking/${bookingId}`, { headers: authHeader() });
+                setGetBooking(response.data);
             } catch (err) {
-                setError(err.response?.data?.message || 'Failed to fetch room data');
+                setError(err.response?.data?.message || 'Failed to fetch booking data');
             } finally {
                 setLoading(false);
             }
         }
 
         fetchRoom();
-    }, [params.roomId]);
+    }, [params.bookingId]);
 
     if (loading) return <LoadingSpinner />;
     if (error) return <div>Error: {error}</div>;
@@ -37,11 +37,11 @@ const UpdateRoomPage = () => {
     return (
         <AdminLayout>
             <div>
-                <h1 className='text-center text-3xl my-5 font-work-sans font-bold'>Update Room</h1>
-                <RoomForm existingRoom={getRoom} />
+                <h1 className='text-center text-3xl my-5 font-work-sans font-bold'>Update Booking</h1>
+                {/* <RoomForm existingRoom={getBooking} /> */}
             </div>
         </AdminLayout>
     );
 };
 
-export default UpdateRoomPage;
+export default UpdateBookingPage;

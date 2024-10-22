@@ -18,15 +18,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 
-// Allow requests from your frontend
-const allowedOrigins = ['https://room-booking-and-management-system-frontend.vercel.app'];
-
-app.use(cors({
-    origin: allowedOrigins,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true, // If you need to pass cookies or authentication headers
-}));
-
+app.use(cors());
 
 // Routes
 app.use("/api/auth", authRoutes); // Authentication routes

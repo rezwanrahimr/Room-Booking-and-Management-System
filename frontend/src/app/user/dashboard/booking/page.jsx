@@ -15,7 +15,7 @@ const Bookings = () => {
     useEffect(() => {
         const fetchRoom = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/booking`, { headers: authHeader() });
+                const response = await axios.get(`https://room-booking-and-management-system.vercel.app/api/booking`, { headers: authHeader() });
                 setRoom(response.data);
             } catch (error) {
                 console.error("Error fetching room details:", error);
@@ -34,7 +34,7 @@ const Bookings = () => {
                 price: room.rent
             };
             // Call the booking API
-            await axios.post('http://localhost:5000/api/booking', bookingData, { headers: authHeader() });
+            await axios.post('https://room-booking-and-management-system.vercel.app/api/booking', bookingData, { headers: authHeader() });
             alert("Booking successful!");
         } catch (error) {
             console.error("Error booking room:", error);

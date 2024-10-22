@@ -59,6 +59,16 @@ const getUserBookings = async (req, res) => {
     }
 };
 
+// get booking by id
+const getBookingById = async (req, res) => {
+    try {
+        const booking = await Booking.findById(req.params.id).populate('roomId');
+        res.json(booking);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+
 // Get bookings for a user
 const getBookingByRoomId = async (req, res) => {
     try {
@@ -100,6 +110,16 @@ const getBookingByRoomId = async (req, res) => {
 };
 
 
+// get all bookings
+const getAllBookings = async (req, res) => {
+    try {
+        const bookings = await Booking.find().populate('roomId').populate('userId');
+        res.json(bookings);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+
 // Cancel booking
 const cancelBooking = async (req, res) => {
     try {
@@ -118,4 +138,4 @@ const cancelBooking = async (req, res) => {
     }
 };
 
-module.exports = { createBooking, getUserBookings, getBookingByRoomId, cancelBooking };
+module.exports = { createBooking, getUserBookings, getBookingById, getBookingByRoomId, getAllBookings, cancelBooking };
