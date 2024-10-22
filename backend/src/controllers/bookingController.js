@@ -118,6 +118,47 @@ const getAllBookings = async (req, res) => {
     }
 };
 
+
+
+// Update an existing booking
+const updateBooking = async (req, res) => {
+    const { roomId, fromDate, toDate, price, userId, status } = req.body;
+
+    try {
+
+        const booking = await Booking.findById(req.params.id);
+
+        if (!booking) {
+            return res.status(404).json({ status: false, message: 'Booking not found' });
+        }
+
+
+        // Update booking details
+        booking.roomId = roomId || booking.roomId;
+        booking.fromDate = fromDate || booking.fromDate;
+        booking.toDate = toDate || booking.toDate;
+        booking.price = price || booking.price;
+        booking.userId = userId || booking.userId;
+        booking.status = status || booking.status;
+
+        await booking.save();
+
+        res.status(200).json({
+            status: true,
+            message: 'Booking updated successfully',
+            data: booking
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: 'Server error',
+            data: error.message
+        });
+    }
+};
+
+
+
 // Cancel booking
 const cancelBooking = async (req, res) => {
     try {
@@ -136,4 +177,4 @@ const cancelBooking = async (req, res) => {
     }
 };
 
-module.exports = { createBooking, getUserBookings, getBookingById, getBookingByRoomId, getAllBookings, cancelBooking };
+module.exports = { createBooking, getUserBookings, getBookingById, getBookingByRoomId, getAllBookings, updateBooking, cancelBooking };

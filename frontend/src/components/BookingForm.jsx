@@ -42,14 +42,25 @@ const BookingForm = ({ existingBooking }) => {
         fetchData();
     }, []);
 
-    // Set initial values based on existing booking
+    // Set initial values
     useEffect(() => {
-        if (existingBooking ) {
+        if (existingBooking) {
             setInitialValues({
-                userId: users.find(user => { user._id === existingBooking.userId }) || null,
-                roomId: rooms.find(room => { room._id === existingBooking.roomId }) || null,
-                rent: existingBooking?.rent || '',
-                status: statusList.find(status => { status.value === existingBooking.status }) || null,
+                userId: existingBooking.userId || '',
+                roomId: existingBooking.roomId._id || '',
+                rent: existingBooking.price || 0,
+                status: existingBooking.status || '',
+                fromDate: existingBooking.fromDate ? existingBooking.fromDate.split('T')[0] : '', 
+                toDate: existingBooking.toDate ? existingBooking.toDate.split('T')[0] : ''
+            });
+        } else {
+            setInitialValues({
+                userId: '',
+                roomId: '',
+                rent: 0,
+                status: '',
+                fromDate: '',  
+                toDate: ''  
             });
         }
     }, [existingBooking, users, rooms]);
@@ -59,22 +70,22 @@ const BookingForm = ({ existingBooking }) => {
         roomId: Yup.string().required('Room is required'),
         rent: Yup.number().required('Rent is required').positive('Must be a positive number'),
         status: Yup.string().required('Status is required'),
+        fromDate: Yup.date().required('From date is required'),
+        toDate: Yup.date().required('To date is required').min(
+            Yup.ref('fromDate'),
+            'To date must be later than from date'
+        )
     });
 
     const handleSubmit = async (values) => {
         try {
-            const formData = { ...values };
-            const url = existingBooking
-                ? `https://room-booking-and-management-system.vercel.app/api/rooms/${existingBooking._id}`
-                : 'https://room-booking-and-management-system.vercel.app/api/rooms';
-            const method = existingBooking ? 'put' : 'post';
-
-            const response = await axios[method](url, formData, { headers: authHeader(true) });
+            const formatData = { ...values };
+            const response = await axios.put(`http://localhost:5000/api/booking/${existingBooking._id}`, formatData, { headers: authHeader() });
 
             if (response.data.status) {
                 Swal.fire({
                     icon: 'success',
-                    title: `Booking ${existingBooking ? 'Updated' : 'Created'} Successfully!`,
+                    title: `Booking Update Successfully!`,
                     toast: true,
                     position: 'top-end',
                     showConfirmButton: false,
@@ -82,7 +93,7 @@ const BookingForm = ({ existingBooking }) => {
                     timerProgressBar: true,
                 });
 
-                push('/admin/rooms/all');
+                push('/admin/booking/all');
             }
         } catch (error) {
             console.error('Error submitting form:', error);
@@ -166,6 +177,28 @@ const BookingForm = ({ existingBooking }) => {
                             ))}
                         </Field>
                         <ErrorMessage name="status" component="div" className="text-red-600 text-sm" />
+                    </div>
+
+                    <div>
+                        <Field
+                            name="fromDate"
+                            type="date"
+                            className="input input-bordered w-full lg:w-[600px]"
+                            value={values.fromDate}
+                            onChange={e => setFieldValue('fromDate', e.target.value)}
+                        />
+                        <ErrorMessage name="fromDate" component="div" className="text-red-600 text-sm" />
+                    </div>
+
+                    <div>
+                        <Field
+                            name="toDate"
+                            type="date"
+                            className="input input-bordered w-full lg:w-[600px]"
+                            value={values.toDate}
+                            onChange={e => setFieldValue('toDate', e.target.value)}
+                        />
+                        <ErrorMessage name="toDate" component="div" className="text-red-600 text-sm" />
                     </div>
 
                     <button type="submit" className="btn btn-active btn-neutral w-full text-white">
