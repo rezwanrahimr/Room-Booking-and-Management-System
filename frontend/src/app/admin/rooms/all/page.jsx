@@ -69,7 +69,7 @@ const Rooms = () => {
                     </h1>
                 ) : (
                     rooms.map((room => {
-                        return <div className="card p-16 lg:card-side bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out my-5">
+                        return <div key={room._id} className="card p-16 lg:card-side bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out my-5">
                             <figure className="w-full lg:w-1/2">
                                 <img
                                     src={`data:image/jpeg;base64,${room.picture}`}

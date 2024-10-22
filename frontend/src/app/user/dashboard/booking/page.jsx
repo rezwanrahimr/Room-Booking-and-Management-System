@@ -50,7 +50,7 @@ const Bookings = () => {
         <UserLayout><div className="container mx-auto p-4 font-work-sans">
             {
                 room.map((booking => {
-                    return <div className="card p-16 lg:card-side bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out my-5">
+                    return <div key={booking._id} className="card p-16 lg:card-side bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out my-5">
                         <figure className="w-full lg:w-1/2">
                             <img
                                 src={`data:image/jpeg;base64,${booking.roomId.picture}`}

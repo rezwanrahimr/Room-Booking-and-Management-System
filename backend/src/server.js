@@ -4,7 +4,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const roomRoutes = require("./routes/roomRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
-const path = require('path'); // Import the path module
+const path = require('path');
 const cors = require("cors");
 
 // Load environment variables from .env file
@@ -17,16 +17,21 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors()); // enable CORS
 
-// Serve static files from the 'uploads' directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Allow requests from your frontend
+const allowedOrigins = ['https://room-booking-and-management-system-frontend.vercel.app'];
+
+app.use(cors({
+    origin: allowedOrigins,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true, // If you need to pass cookies or authentication headers
+}));
+
 
 // Routes
 app.use("/api/auth", authRoutes); // Authentication routes
 app.use("/api/rooms", roomRoutes); // Room routes
 app.use("/api/booking", bookingRoutes); // Booking routes
-
 
 app.get("/", (req, res) => {
     res.send("Room Booking Server is running");

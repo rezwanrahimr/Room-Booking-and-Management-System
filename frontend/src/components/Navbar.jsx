@@ -12,8 +12,12 @@ const Navbar = () => {
     const token = Cookies.get('token');
 
     // Decode token to get user role
+    let userName = null;
+    let userEmail = null;
     let userRole = null;
     if (token) {
+        userName = JSON.parse(atob(token.split('.')[1])).name;
+        userEmail = JSON.parse(atob(token.split('.')[1])).email;
         userRole = JSON.parse(atob(token.split('.')[1])).role;
     }
 
@@ -95,14 +99,38 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="navbar-end">
-                {/* Conditionally render based on login status */}
-                {isLoggedIn ? (
-                    <button className="" onClick={handleLogout}>Logout</button>
-                ) : (
-                    <Link className="" href="/login">Login</Link>
-                )}
+
+
+
+
+
+
+
+                <div className="dropdown dropdown-end">
+                    <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+                        <div className="w-10 rounded-full">
+                            <img
+                                alt="Tailwind CSS Navbar component"
+                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                        </div>
+                    </div>
+                    <ul
+                        tabIndex={0}
+                        className="menu menu-sm dropdown-content bg-black  rounded-box z-[1] mt-3 w-52 p-2 shadow">
+                        {
+                            token && <li><a>{userName}</a></li>
+                        }
+
+                        {isLoggedIn ? (
+                            <li><button className="" onClick={handleLogout}>Logout</button></li>
+                        ) : (
+                            <li><Link className="" href="/login">Login</Link></li>
+                        )}
+                    </ul>
+                </div>
+
             </div>
-        </div>
+        </div >
     );
 };
 

@@ -29,7 +29,7 @@ const UpdateRoomPage = () => {
         }
 
         fetchRoom();
-    }, []);
+    }, [params.roomId]);
 
     if (loading) return <LoadingSpinner />;
     if (error) return <div>Error: {error}</div>;
