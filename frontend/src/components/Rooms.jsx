@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import LoadingSpinner from './LoadingSpinner';
 
 const Rooms = () => {
     const [rooms, setRooms] = useState([]);
@@ -27,7 +28,7 @@ const Rooms = () => {
         fetchRooms();
     }, []);
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <LoadingSpinner />;
     if (error) return <div>Error: {error}</div>;
 
     return (

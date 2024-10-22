@@ -17,7 +17,7 @@
     "next": "14.2.15",
     "react": "^18",
     "react-dom": "^18",
-    "sweetalert2": "^11.14.3",
+    "sweetalert2": "^11.14.4",
     "yup": "^1.4.0"
   },
   "devDependencies": {

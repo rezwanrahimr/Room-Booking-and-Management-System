@@ -7,20 +7,20 @@ const createBooking = async (req, res) => {
 
     try {
         const existingBooking = await Booking.findOne({
+            roomId: roomId, // Ensure you are checking for the same room
             $or: [
-                { fromDate: { $lt: toDate }, toDate: { $gt: fromDate } },
-                { fromDate: { $gte: fromDate, $lt: toDate } },
-                { toDate: { $gt: fromDate, $lte: toDate } }
+                {
+                    fromDate: { $lte: toDate },
+                    toDate: { $gte: fromDate }
+                }
             ],
             status: 'booked'
         });
 
         if (existingBooking) {
-            return res.status(400).json({
-                status: false,
-                message: 'Room is already booked for the selected dates',
-                data: null
-            });
+            const error = new Error('Room is already booked for the selected dates');
+            error.statusCode = 400;
+            throw error;
         }
 
         const booking = new Booking({
@@ -39,13 +39,14 @@ const createBooking = async (req, res) => {
             data: booking
         });
     } catch (error) {
-        res.status(500).json({
+        res.status(error.statusCode || 500).json({
             status: false,
-            message: 'Server error',
-            data: error.message
+            message: error.message || 'Server error',
+            data: null
         });
     }
 };
+
 
 
 // Get bookings for a user
@@ -57,6 +58,47 @@ const getUserBookings = async (req, res) => {
         res.status(500).json({ message: 'Server error', error });
     }
 };
+
+// Get bookings for a user
+const getBookingByRoomId = async (req, res) => {
+    try {
+
+        // Find bookings where the current date is between fromDate and toDate
+        const currentDate = new Date();
+        const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0));
+        const endOfDay = new Date(currentDate.setHours(23, 59, 59, 999));
+
+        const bookings = await Booking.find({
+            roomId: req.params.id,
+            fromDate: { $lte: endOfDay },
+            toDate: { $gte: startOfDay }
+        }).populate('roomId');
+
+
+        console.log(bookings);
+
+        if (bookings.length === 0) {
+            return res.status(404).json({
+                status: false,
+                message: 'No bookings available for the current date',
+                data: null
+            });
+        }
+
+        res.status(200).json({
+            status: true,
+            message: 'Bookings retrieved successfully',
+            data: bookings
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: 'Server error',
+            data: error.message
+        });
+    }
+};
+
 
 // Cancel booking
 const cancelBooking = async (req, res) => {
@@ -76,4 +118,4 @@ const cancelBooking = async (req, res) => {
     }
 };
 
-module.exports = { createBooking, getUserBookings, cancelBooking };
+module.exports = { createBooking, getUserBookings, getBookingByRoomId, cancelBooking };

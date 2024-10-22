@@ -8,9 +8,12 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
+import Swal from 'sweetalert2';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 const RoomDetail = () => {
     const [room, setRoom] = useState(null);
+    const [isBooking, setIsBooking] = useState(false);
     const params = useParams();
     const { push } = useRouter();
 
@@ -20,6 +23,23 @@ const RoomDetail = () => {
             try {
                 const response = await axios.get(`http://localhost:5000/api/rooms/${params.roomId}`, { headers: authHeader() });
                 setRoom(response.data);
+            } catch (error) {
+                console.error("Error fetching room details:", error);
+            }
+        };
+
+        fetchRoom();
+    }, [params.roomId]);
+
+
+    useEffect(() => {
+        const fetchRoom = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5000/api/booking/room/${params.roomId}`, { headers: authHeader() });
+                console.log(response.data);
+                if (response.data.data.length) {
+                    setIsBooking(true);
+                }
             } catch (error) {
                 console.error("Error fetching room details:", error);
             }
@@ -47,33 +67,49 @@ const RoomDetail = () => {
         }
 
         try {
+
             const bookingData = {
                 roomId: params.roomId,
                 fromDate: values.fromDate,
                 toDate: values.toDate,
                 price: room.rent
             };
-            // Call the booking API
-            const response = await axios.post('http://localhost:5000/api/booking', bookingData, { headers: authHeader() });
-            console.log(response)
-            Swal.fire({
-                position: "center",
-                icon: "success",
-                title:` ${response.data.message}`,
-                showConfirmButton: false,
-                timer: 1500
-            });
+
+            const url = `http://localhost:5000/api/booking`;
+            const response = await axios.post(url, bookingData, { headers: authHeader() });
+
             if (response.data.status) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "Room booked successfully!"
+                });
+
                 push('/user/dashboard');
             }
         } catch (error) {
-
+            Swal.fire({
+                icon: 'info',
+                title: 'Booking failed',
+                text: error.response.data.message
+            });
         } finally {
             setSubmitting(false);
         }
-    };
+    }
 
-    if (!room) return <p>Loading...</p>;
+
+    if (!room) return <LoadingSpinner />;
 
     return (
         <div className="container mx-auto p-4 font-work-sans">
@@ -127,13 +163,23 @@ const RoomDetail = () => {
                                     </div>
                                 </div>
                                 <div className="card-actions justify-end mt-4">
-                                    <button
-                                        type="submit"
-                                        className="btn bg-sky-600 text-white hover:bg-sky-500 px-4 py-2 rounded-lg font-medium transition-colors duration-200"
-                                        disabled={isSubmitting}
-                                    >
-                                        {isSubmitting ? "Booking..." : "Book Now"}
-                                    </button>
+                                    {
+                                        isBooking ? (
+                                            <button
+                                                className="btn bg-sky-600 text-red-600 px-4 py-2 rounded-lg font-medium transition-colors duration-200 cursor-not-allowed"
+                                                disabled
+                                            >
+                                                Already Booked
+                                            </button>
+                                        ) : <button
+                                            type="submit"
+                                            className="btn bg-sky-600 text-white hover:bg-sky-500 px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? "Booking..." : "Book Now"}
+                                        </button>
+                                    }
+
                                 </div>
                             </Form>
                         )}
