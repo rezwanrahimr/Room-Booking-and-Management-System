@@ -26,9 +26,18 @@ const createRoom = async (req, res) => {
         });
 
         await newRoom.save();
-        res.status(201).json({ message: 'Room created successfully', room: newRoom });
+        res.status(201).json({
+            status: true,
+            message: 'Room created successfully',
+            data: newRoom
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+
+        res.status(500).json({
+            status: true,
+            message: error.message,
+            data: null
+        });
     }
 };
 
@@ -72,9 +81,17 @@ const updateRoom = async (req, res) => {
         }
 
         await room.save();
-        res.json(room);
+        res.status(201).json({
+            status: true,
+            message: 'Room update successfully',
+            data: room
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({
+            status: true,
+            message: error.message,
+            data: null
+        });
     }
 };
 
@@ -90,10 +107,17 @@ const deleteRoom = async (req, res) => {
         }
 
         await room.deleteOne();
-
-        res.json({ message: "Room removed successfully" });
+        res.status(200).json({
+            status: true,
+            message: 'Room removed successfully',
+            data: null
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({
+            status: true,
+            message: error.message,
+            data: null
+        });
     }
 };
 

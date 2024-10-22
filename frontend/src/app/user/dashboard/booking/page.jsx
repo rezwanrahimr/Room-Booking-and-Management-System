@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { authHeader } from '@/utils';
 import * as Yup from 'yup';
 import UserLayout from '@/components/UserLayout';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 const Bookings = () => {
     const [room, setRoom] = useState(null);
@@ -43,7 +44,7 @@ const Bookings = () => {
         }
     };
 
-    if (!room) return <p>Loading...</p>;
+    if (!room) return <LoadingSpinner />;
 
     return (
         <UserLayout><div className="container mx-auto p-4 font-work-sans">

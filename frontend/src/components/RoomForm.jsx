@@ -4,28 +4,34 @@ import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-// import { useRouter } from 'next/router';
 import { authHeader } from '@/utils';
+import LoadingSpinner from './LoadingSpinner';
+import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2';
 
 const RoomForm = ({ existingRoom }) => {
+
     const [initialValues, setInitialValues] = useState(null);
     const [previewImage, setPreviewImage] = useState({
         file: null,
         initialStatus: false
-    }); // Preview image for the existing room
-    // const router = useRouter();
+    });
+
+    const { push } = useRouter();
+
+
     const isUpdate = !!existingRoom;
 
     useEffect(() => {
-        // Set the initial values after existingRoom is fetched
+        // Set the initial values for the form
         if (existingRoom) {
             setInitialValues({
                 title: existingRoom?.title || '',
                 rent: existingRoom?.rent || '',
                 facilities: existingRoom?.facilities || [],
-                picture: null, // Initially null, we'll handle the existing image preview separately
+                picture: null,
             });
-            setPreviewImage({ file: existingRoom.picture, initialStatus: true }); // Set the existing image (base64) for preview
+            setPreviewImage({ file: existingRoom.picture, initialStatus: true });
         } else {
             setInitialValues({
                 title: '',
@@ -40,7 +46,7 @@ const RoomForm = ({ existingRoom }) => {
         title: Yup.string().required('Room title is required'),
         rent: Yup.number().required('Room rent is required').positive('Must be a positive number'),
         facilities: Yup.array().of(Yup.string()).required('At least one facility is required'),
-        picture: Yup.mixed().required('A picture is required'),
+        picture: isUpdate ? Yup.mixed().nullable() : Yup.mixed().required('A picture is required'),
     });
 
     const handleSubmit = async (values) => {
@@ -56,18 +62,57 @@ const RoomForm = ({ existingRoom }) => {
         try {
             if (isUpdate) {
                 // Update existing room
-                await axios.put(`http://localhost:5000/api/rooms/${existingRoom._id}`, formData, {
+                const response = await axios.put(`http://localhost:5000/api/rooms/${existingRoom._id}`, formData, {
                     headers: authHeader(true),
                 });
+
+                if (response.data.status) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: "Room Update Successfully!"
+                    });
+
+                    push('/admin/rooms/all');
+                }
             } else {
                 // Create new room
-                await axios.post('http://localhost:5000/api/rooms', formData, {
+                const response = await axios.post('http://localhost:5000/api/rooms', formData, {
                     headers: authHeader(true),
                 });
+
+                if (response.data.status) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: "Room Create Successfully!"
+                    });
+
+                    push('/admin/rooms/all');
+                }
             }
 
-            // Navigate after success
-            // router.push('/admin/dashboard');
+
         } catch (error) {
             console.error('Error saving room:', error);
         }
@@ -82,15 +127,14 @@ const RoomForm = ({ existingRoom }) => {
         if (file) {
             const reader = new FileReader();
             reader.onload = () => {
-                setPreviewImage({file:reader.result,initialStatus:false});
+                setPreviewImage({ file: reader.result, initialStatus: false });
             };
             reader.readAsDataURL(file);
         }
     };
 
-    // Render loading state until initialValues are set
     if (!initialValues) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner />;
     }
 
     return (
@@ -101,7 +145,7 @@ const RoomForm = ({ existingRoom }) => {
             enableReinitialize // Ensure form reinitializes when initialValues change
         >
             {({ values, setFieldValue }) => (
-                <Form className="order-container flex flex-col space-y-4 w-full">
+                <Form className="order-container flex flex-col space-y-4 w-full font-work-sans">
                     <div>
                         <Field
                             name="title"
@@ -138,7 +182,7 @@ const RoomForm = ({ existingRoom }) => {
                                 ))}
                                 <button
                                     type="button"
-                                    className="btn btn-neutral mt-2"
+                                    className="btn btn-neutral mt-2 text-white"
                                     onClick={() => push('')}
                                 >
                                     Add New Facility
@@ -148,10 +192,10 @@ const RoomForm = ({ existingRoom }) => {
                     </FieldArray>
 
                     <div className="flex flex-col">
-                        {previewImage && (
+                        {previewImage.file && (
                             <div className="mb-4">
                                 <img
-                                    src={previewImage.initialStatus ?  `data:image/jpeg;base64,${previewImage.file}` : previewImage.file }
+                                    src={previewImage.initialStatus ? `data:image/jpeg;base64,${previewImage.file}` : previewImage.file}
                                     alt="Room Preview"
                                     className="w-[600px] h-auto"
                                 />
@@ -161,7 +205,7 @@ const RoomForm = ({ existingRoom }) => {
                             type="file"
                             name="picture"
                             accept="image/*"
-                            className="file-input file-input-ghost bg-secondary text-white mb-4 w-full lg:w-[600px]"
+                            className="file-input file-input-ghost bg-sky-600 text-white mb-4 w-full lg:w-[600px]"
                             onChange={(event) => handlePictureChange(event, setFieldValue)}
                         />
                         <ErrorMessage name="picture" component="div" className="text-red-600 text-sm" />

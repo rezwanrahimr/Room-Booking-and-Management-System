@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'next/navigation';
 import { authHeader } from '@/utils';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 const UpdateRoomPage = () => {
     const [getRoom, setGetRoom] = useState(null);
@@ -30,7 +31,7 @@ const UpdateRoomPage = () => {
         fetchRoom();
     }, []);
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <LoadingSpinner />;
     if (error) return <div>Error: {error}</div>;
 
     return (
